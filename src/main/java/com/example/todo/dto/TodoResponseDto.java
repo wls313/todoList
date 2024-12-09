@@ -15,6 +15,7 @@ public class TodoResponseDto {
     private String description;
     private String todo;
     private int didnot;
+
     public TodoResponseDto(Todo todo) {
         this.name = todo.getName();
         this.description = todo.getDescription();

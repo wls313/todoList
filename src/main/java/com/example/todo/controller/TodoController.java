@@ -32,4 +32,10 @@ public class TodoController {
         return todoService.findAllTodo();
     }
 
+    @GetMapping("/{name}")
+    public ResponseEntity<TodoResponseDto> findTodoByName(@PathVariable String name) {
+
+        return new ResponseEntity<>(todoService.findTodoByName(name), HttpStatus.OK);
+    }
+
 }

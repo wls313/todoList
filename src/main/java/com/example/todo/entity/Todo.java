@@ -28,6 +28,16 @@ public class Todo {
         this.description = description;
         this.today = LocalDateTime.now();
         this.alterDay = LocalDateTime.now();
-        this.didNot = 0;
+    }
+
+    public Todo(long id, String name, String password, String exception, String description, String todo, int didNot) {
+        this.id = id;
+        this.name = name;
+        this.todo = todo;
+        this.password = password;
+        this.exception = exception;
+        this.description = description;
+        this.today = LocalDateTime.now();
+        this.alterDay = LocalDateTime.now();
     }
 }

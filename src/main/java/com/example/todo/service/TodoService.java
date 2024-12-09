@@ -9,4 +9,6 @@ public interface TodoService {
     TodoResponseDto saveTodo(TodoRequestDto requestDto);
 
     List<TodoResponseDto> findAllTodo();
+
+    TodoResponseDto findTodoByName(String name);
 }

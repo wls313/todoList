@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class TodoRepositoryImpl implements TodoRepository {
@@ -56,15 +57,40 @@ public class TodoRepositoryImpl implements TodoRepository {
             @Override
             public TodoResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new TodoResponseDto(
-                        rs.getLong("id"), // id 필드 추가
+                        rs.getLong("id"),
                         rs.getString("name"),
                         rs.getString("password"),
-                        rs.getString("exception"), // exception 필드 추가
+                        rs.getString("exception"),
                         rs.getString("description"),
-                        rs.getString("todo"), // todo 필드 추가
+                        rs.getString("todo"),
                         rs.getInt("did_not")
                 );
             }
+        };
+    }
+
+    @Override
+    public Optional<Todo> findTodoByName(String name) {
+        List<Todo> result = jdbcTemplate.query("select * from todoList where name = ?", memoRowMapperV2(), name);
+
+        return result.stream().findAny();
+    }
+
+    private RowMapper<Todo> memoRowMapperV2() {
+        return new RowMapper<Todo>() {
+            @Override
+            public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Todo(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("password"),
+                        rs.getString("exception"),
+                        rs.getString("description"),
+                        rs.getString("todo"),
+                        rs.getInt("did_not")
+                );
+            }
+
         };
     }
 
