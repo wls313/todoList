@@ -6,6 +6,8 @@ import com.example.todo.entity.Todo;
 import com.example.todo.repository.TodoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TodoServiceImpl implements TodoService{
 
@@ -20,5 +22,13 @@ public class TodoServiceImpl implements TodoService{
         Todo todo = new Todo(requestDto.getName(), requestDto.getDescription(), requestDto.getPassword(), requestDto.getException(), requestDto.getTodo());
 
         return todoRepository.saveTodo(todo);
+    }
+
+    @Override
+    public List<TodoResponseDto> findAllTodo() {
+        List<TodoResponseDto> allTodos = todoRepository.findAllTodos();
+
+        return allTodos;
+
     }
 }

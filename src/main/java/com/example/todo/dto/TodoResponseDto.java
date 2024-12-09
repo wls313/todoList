@@ -14,12 +14,13 @@ public class TodoResponseDto {
     private String exception;
     private String description;
     private String todo;
-
+    private int didnot;
     public TodoResponseDto(Todo todo) {
         this.name = todo.getName();
         this.description = todo.getDescription();
         this.exception = todo.getException();
         this.password = todo.getPassword();
         this.todo = todo.getTodo();
+        this.didnot = todo.getDidNot();
     }
 }

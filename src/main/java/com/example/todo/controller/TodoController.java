@@ -5,10 +5,9 @@ import com.example.todo.dto.TodoResponseDto;
 import com.example.todo.service.TodoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/todo")
@@ -26,4 +25,11 @@ public class TodoController {
         // ServiceLayer 호출 및 응답
         return new ResponseEntity<>(todoService.saveTodo(requestDto), HttpStatus.CREATED);
     }
+
+    @GetMapping
+    public List<TodoResponseDto> findAllTodo() {
+
+        return todoService.findAllTodo();
+    }
+
 }
