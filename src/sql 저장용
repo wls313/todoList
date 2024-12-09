@@ -1,0 +1,50 @@
+use todo;
+
+CREATE TABLE todoList
+(
+    id       BIGINT       AUTO_INCREMENT PRIMARY KEY COMMENT '사용자 고유번호',
+    name  VARCHAR(20) NOT NULL COMMENT '이름',
+    password VARCHAR(20) NOT NULL COMMENT '비밀번호',
+    todo    VARCHAR(100) NOT NULL COMMENT '오늘 할일',
+    description VARCHAR(100) COMMENT 'todo 설명',
+    did_not INT DEFAULT 0 COMMENT '했는가 안했는가',
+    exeption VARCHAR(100) COMMENT '예외 상황',
+    today DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '오늘 날짜'
+);
+
+// insert 입력 예시
+
+INSERT INTO todoList
+    (name, password, todo, description, exeption)
+VALUE
+    ('민진홍','1111','과제 제출','오늘안에 꼭 마무리해야한다!!','정 안되면 아쉽다!');
+
+// select 이름과 패스워드 만으로 검색 (이름을 통한 개인 모두 조회)
+
+SELECT
+    *
+FROM
+    todoList
+WHERE
+    password = '1111' AND name = '민진홍';
+
+// select 이름과 패스워드 그리고 할일로 검색(단건 검색)
+
+SELECT
+    *
+FROM
+    todoList
+WHERE
+    password = '1111' AND name = '민진홍' AND todo = '과제 제출';
+
+// select * from 으로 관리자버전의 전부보기
+SELECT
+    *
+FROM
+    todoList;
+
+//delete 예시
+delete from
+    todolist
+where
+    todo = '히히' and name = '민진홍' and password = '1111';
