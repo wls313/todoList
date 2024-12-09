@@ -8,14 +8,14 @@ CREATE TABLE todoList
     todo    VARCHAR(100) NOT NULL COMMENT '오늘 할일',
     description VARCHAR(100) COMMENT 'todo 설명',
     did_not INT DEFAULT 0 COMMENT '했는가 안했는가',
-    exeption VARCHAR(100) COMMENT '예외 상황',
+    exception VARCHAR(100) COMMENT '예외 상황',
     today DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '오늘 날짜'
 );
 
 // insert 입력 예시
 
 INSERT INTO todoList
-    (name, password, todo, description, exeption)
+    (name, password, todo, description, exception)
 VALUE
     ('민진홍','1111','과제 제출','오늘안에 꼭 마무리해야한다!!','정 안되면 아쉽다!');
 
