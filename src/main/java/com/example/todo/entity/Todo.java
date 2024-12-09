@@ -17,7 +17,7 @@ public class Todo {
     private String todo;
     private LocalDateTime today;
     private LocalDateTime alterDay;
-    private int didNot;
+    private int didNot ;
 
 
     public Todo(String name, String password, String exception, String description, String todo) {
