@@ -3,7 +3,7 @@ package com.example.todo.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -15,7 +15,8 @@ public class Todo {
     private String exception;
     private String description;
     private String todo;
-    private LocalDate today;
+    private LocalDateTime today;
+    private LocalDateTime alterDay;
     private int didNot;
 
 
@@ -25,7 +26,8 @@ public class Todo {
         this.password = password;
         this.exception = exception;
         this.description = description;
-        this.today = LocalDate.now();
+        this.today = LocalDateTime.now();
+        this.alterDay = LocalDateTime.now();
         this.didNot = 0;
     }
 }

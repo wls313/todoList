@@ -32,7 +32,8 @@ public class TodoRepositoryImpl implements TodoRepository {
         parameters.put("exception", todo.getException());
         parameters.put("description", todo.getDescription());
         parameters.put("todo", todo.getTodo());
-        parameters.put("today", todo.getToday()); // 현재 날짜 추가
+        parameters.put("today", todo.getToday());
+        parameters.put("alterDay",todo.getAlterDay());
         parameters.put("did_not", todo.getDidNot());
 
         // 저장 후 생성된 key값을 Number 타입으로 반환하는 메서드
