@@ -34,7 +34,7 @@ public class TodoRepositoryImpl implements TodoRepository {
         parameters.put("todo", todo.getTodo());
         parameters.put("today", todo.getToday());
         parameters.put("alterDay",todo.getAlterDay());
-        parameters.put("did_not ", todo.getDidNot());
+        parameters.put("did_not", todo.getDidNot());
 
         // 저장 후 생성된 key값을 Number 타입으로 반환하는 메서드
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
