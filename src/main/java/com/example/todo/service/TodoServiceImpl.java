@@ -66,4 +66,14 @@ public class TodoServiceImpl implements TodoService{
         // 수정된 메모 조회
         return new TodoResponseDto(todoRepository.findTodoById(id).get());
     }
+
+    @Override
+    public void deleteTodo(Long id) {
+        // memo 삭제
+        int deletedRow = todoRepository.deleteTodo(id);
+        // 삭제된 row가 0개 라면
+        if (deletedRow == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
+        }
+    }
 }

@@ -14,4 +14,6 @@ public interface TodoRepository {
     Optional<Todo> findTodoById(Long id);
 
     int updateTodo(Long id, String todo, String description, String exception);
+
+    int deleteTodo(Long id);
 }

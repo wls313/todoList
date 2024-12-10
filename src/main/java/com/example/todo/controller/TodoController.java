@@ -46,4 +46,13 @@ public class TodoController {
 
         return new ResponseEntity<>(todoService.updateTodo(id, requestDto.getTodo(), requestDto.getDescription(),requestDto.getException()), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
+
+        todoService.deleteTodo(id);
+        // 성공한 경우
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

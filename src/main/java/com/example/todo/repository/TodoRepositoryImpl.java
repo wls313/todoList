@@ -100,4 +100,9 @@ public class TodoRepositoryImpl implements TodoRepository {
     }
 
 
+    @Override
+    public int deleteTodo(Long id) {
+        return jdbcTemplate.update("delete from todoList where id = ?", id);
+    }
+
 }
