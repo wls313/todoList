@@ -10,5 +10,7 @@ public interface TodoService {
 
     List<TodoResponseDto> findAllTodo();
 
-    TodoResponseDto findTodoByName(String name);
+    TodoResponseDto findTodoById(Long id);
+
+    TodoResponseDto updateTodo(Long id, String todo, String description, String exception);
 }

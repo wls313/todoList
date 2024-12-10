@@ -11,5 +11,7 @@ public interface TodoRepository {
 
     List<TodoResponseDto> findAllTodos();
 
-    Optional<Todo> findTodoByName(String name);
+    Optional<Todo> findTodoById(Long id);
+
+    int updateTodo(Long id, String todo, String description, String exception);
 }

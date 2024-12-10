@@ -32,10 +32,18 @@ public class TodoController {
         return todoService.findAllTodo();
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<TodoResponseDto> findTodoByName(@PathVariable String name) {
+    @GetMapping("/{id}")
+    public ResponseEntity<TodoResponseDto> findTodoByName(@PathVariable Long id) {
 
-        return new ResponseEntity<>(todoService.findTodoByName(name), HttpStatus.OK);
+        return new ResponseEntity<>(todoService.findTodoById(id), HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<TodoResponseDto> updateTodo(
+            @PathVariable Long id,
+            @RequestBody TodoResponseDto requestDto
+    ) {
+
+        return new ResponseEntity<>(todoService.updateTodo(id, requestDto.getTodo(), requestDto.getDescription(),requestDto.getException()), HttpStatus.OK);
+    }
 }

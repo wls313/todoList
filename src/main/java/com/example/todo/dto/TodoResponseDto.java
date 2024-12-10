@@ -3,9 +3,11 @@ package com.example.todo.dto;
 import com.example.todo.entity.Todo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class TodoResponseDto {
 
     private Long id;

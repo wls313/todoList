@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,16 +31,16 @@ public class TodoRepositoryImpl implements TodoRepository {
         // INSERT Query를 직접 작성하지 않아도 된다.
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("todoList").usingGeneratedKeyColumns("id");
-
+        LocalDateTime now = LocalDateTime.now();
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", todo.getName());
         parameters.put("password", todo.getPassword());
         parameters.put("exception", todo.getException());
         parameters.put("description", todo.getDescription());
         parameters.put("todo", todo.getTodo());
-        parameters.put("today", todo.getToday());
-        parameters.put("alterDay",todo.getAlterDay());
-        parameters.put("did_not", todo.getDidNot());
+        parameters.put("today", now);
+        parameters.put("alterDay", now);
+        parameters.put("did_not", 0);
 
         // 저장 후 생성된 key값을 Number 타입으로 반환하는 메서드
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -70,8 +71,8 @@ public class TodoRepositoryImpl implements TodoRepository {
     }
 
     @Override
-    public Optional<Todo> findTodoByName(String name) {
-        List<Todo> result = jdbcTemplate.query("select * from todoList where name = ?", memoRowMapperV2(), name);
+    public Optional<Todo> findTodoById(Long id) {
+        List<Todo> result = jdbcTemplate.query("select * from todoList where id = ?", memoRowMapperV2(), id);
 
         return result.stream().findAny();
     }
@@ -86,12 +87,16 @@ public class TodoRepositoryImpl implements TodoRepository {
                         rs.getString("password"),
                         rs.getString("exception"),
                         rs.getString("description"),
-                        rs.getString("todo"),
-                        rs.getInt("did_not")
+                        rs.getString("todo")
                 );
             }
 
         };
+    }
+
+    @Override
+    public int updateTodo(Long id, String todo, String description, String exception) {
+        return jdbcTemplate.update("update todoList set todo = ?, description = ?, exception = ? where id = ?", todo,description, exception, id);
     }
 
 
