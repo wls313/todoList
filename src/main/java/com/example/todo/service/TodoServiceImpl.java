@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ public class TodoServiceImpl implements TodoService{
 
     @Override
     public TodoResponseDto saveTodo(TodoRequestDto requestDto) {
-        Todo todo = new Todo(requestDto.getName(), requestDto.getDescription(), requestDto.getPassword(), requestDto.getException(), requestDto.getTodo());
+        Todo todo = new Todo(requestDto.getId(), requestDto.getName(), requestDto.getPassword(), requestDto.getDescription(), requestDto.getException(), requestDto.getTodo(),requestDto.getToday());
 
         return todoRepository.saveTodo(todo);
     }
@@ -37,11 +38,22 @@ public class TodoServiceImpl implements TodoService{
     }
 
     @Override
-    public TodoResponseDto findTodoById(Long id) {
+    public TodoResponseDto findTodoById(String id) {
         Optional<Todo> optionalTodo = todoRepository.findTodoById(id);
 
         if (optionalTodo.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist name = " + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
+        }
+
+        return new TodoResponseDto(optionalTodo.get());
+    }
+
+    @Override
+    public TodoResponseDto findTodoByToday(Date today) {
+        Optional<Todo> optionalTodo = todoRepository.findTodoByToday(today);
+
+        if (optionalTodo.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist name = " + today);
         }
 
         return new TodoResponseDto(optionalTodo.get());
@@ -49,31 +61,33 @@ public class TodoServiceImpl implements TodoService{
 
     @Transactional
     @Override
-    public TodoResponseDto updateTodo(Long id, String todo, String description, String exception) {
+    public TodoResponseDto updateTodo(String id, String todo, String description, String exception) {
 
         // 필수값 검증
         if (todo == null || id == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The name and todo are required values.");
         }
 
-        // memo 수정
+
         int updatedRow = todoRepository.updateTodo(id, todo, description, exception);
         // 수정된 row가 0개라면
         if (updatedRow == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been modified.");
         }
 
-        // 수정된 메모 조회
+
         return new TodoResponseDto(todoRepository.findTodoById(id).get());
     }
 
     @Override
-    public void deleteTodo(Long id) {
-        // memo 삭제
-        int deletedRow = todoRepository.deleteTodo(id);
-        // 삭제된 row가 0개 라면
+    public void deleteTodo(String id, String password) {
+
+        int deletedRow = todoRepository.deleteTodo(id,password);
+
         if (deletedRow == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
         }
     }
+
+
 }

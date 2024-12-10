@@ -2,6 +2,7 @@ package com.example.todo.repository;
 
 import com.example.todo.dto.TodoResponseDto;
 import com.example.todo.entity.Todo;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -30,9 +32,13 @@ public class TodoRepositoryImpl implements TodoRepository {
     public TodoResponseDto saveTodo(Todo todo) {
         // INSERT Query를 직접 작성하지 않아도 된다.
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.withTableName("todoList").usingGeneratedKeyColumns("id");
+        jdbcInsert.withTableName("todoList").usingGeneratedKeyColumns("key");
+
         LocalDateTime now = LocalDateTime.now();
+
         Map<String, Object> parameters = new HashMap<>();
+
+        parameters.put("id", todo.getId());
         parameters.put("name", todo.getName());
         parameters.put("password", todo.getPassword());
         parameters.put("exception", todo.getException());
@@ -42,15 +48,15 @@ public class TodoRepositoryImpl implements TodoRepository {
         parameters.put("alterDay", now);
         parameters.put("did_not", 0);
 
-        // 저장 후 생성된 key값을 Number 타입으로 반환하는 메서드
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return new TodoResponseDto(key.longValue(), todo.getName(), todo.getPassword(), todo.getException(), todo.getException(), todo.getTodo(), todo.getDidNot());
+        return new TodoResponseDto(key.longValue(), todo.getId(), todo.getName(), todo.getPassword(), todo.getException(), todo.getDescription(), todo.getTodo(), todo.getDidNot(), todo.getToday());
+
     }
 
     @Override
     public List<TodoResponseDto> findAllTodos() {
-        return jdbcTemplate.query("select * from todoList", todoRowMapper());
+        return jdbcTemplate.query("select * from todoList ORDER BY today ASC ", todoRowMapper());
     }
 
     private RowMapper<TodoResponseDto> todoRowMapper() {
@@ -58,36 +64,45 @@ public class TodoRepositoryImpl implements TodoRepository {
             @Override
             public TodoResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new TodoResponseDto(
-                        rs.getLong("id"),
+                        rs.getString("id"),
                         rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("exception"),
                         rs.getString("description"),
                         rs.getString("todo"),
-                        rs.getInt("did_not")
+                        rs.getInt("did_not"),
+                        rs.getDate("today")
                 );
             }
         };
     }
 
     @Override
-    public Optional<Todo> findTodoById(Long id) {
-        List<Todo> result = jdbcTemplate.query("select * from todoList where id = ?", memoRowMapperV2(), id);
+    public Optional<Todo> findTodoById(String id) {
+        List<Todo> result = jdbcTemplate.query("select * from todoList where id = ? ORDER BY today ASC ", todoRowMapperV2(), id);
 
         return result.stream().findAny();
     }
 
-    private RowMapper<Todo> memoRowMapperV2() {
+    @Override
+    public Optional<Todo> findTodoByToday(Date today) {
+        List<Todo> result = jdbcTemplate.query("select * from todoList where today = ? ORDER BY today ASC ", todoRowMapperV2(), today);
+
+        return result.stream().findAny();
+    }
+
+    private RowMapper<Todo> todoRowMapperV2() {
         return new RowMapper<Todo>() {
             @Override
             public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new Todo(
-                        rs.getLong("id"),
+                        rs.getString("id"),
                         rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("exception"),
                         rs.getString("description"),
-                        rs.getString("todo")
+                        rs.getString("todo"),
+                        rs.getDate("today")
                 );
             }
 
@@ -95,14 +110,31 @@ public class TodoRepositoryImpl implements TodoRepository {
     }
 
     @Override
-    public int updateTodo(Long id, String todo, String description, String exception) {
+    public int updateTodo(String id, String todo, String description, String exception) {
         return jdbcTemplate.update("update todoList set todo = ?, description = ?, exception = ? where id = ?", todo,description, exception, id);
     }
 
 
     @Override
-    public int deleteTodo(Long id) {
-        return jdbcTemplate.update("delete from todoList where id = ?", id);
-    }
+    public int deleteTodo(String id, String password) {
 
+        //db의 password 와 비교
+        String dbPassword;
+        try {
+            dbPassword = jdbcTemplate.queryForObject(
+                    "SELECT password FROM todoList WHERE id = ?",
+                    new Object[]{id},
+                    String.class
+            );
+        } catch (EmptyResultDataAccessException e) {
+            throw new IllegalArgumentException("No todo found with the given id");
+        }
+
+        //같을경우 삭제 아닌경우 wrong password 라고 출력
+        if (dbPassword.equals(password)) {
+            return jdbcTemplate.update("delete from todoList where id = ?", id);
+        } else {
+            throw new IllegalArgumentException("Wrong password");
+        }
+    }
 }

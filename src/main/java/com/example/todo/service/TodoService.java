@@ -3,6 +3,7 @@ package com.example.todo.service;
 import com.example.todo.dto.TodoRequestDto;
 import com.example.todo.dto.TodoResponseDto;
 
+import java.sql.Date;
 import java.util.List;
 
 public interface TodoService {
@@ -10,9 +11,11 @@ public interface TodoService {
 
     List<TodoResponseDto> findAllTodo();
 
-    TodoResponseDto findTodoById(Long id);
+    TodoResponseDto findTodoById(String id);
 
-    TodoResponseDto updateTodo(Long id, String todo, String description, String exception);
+    TodoResponseDto updateTodo(String id, String todo, String description, String exception);
 
-    void deleteTodo(Long id);
+    void deleteTodo(String id, String password);
+
+    TodoResponseDto findTodoByToday(Date today);
 }
