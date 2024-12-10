@@ -111,7 +111,7 @@ public class TodoRepositoryImpl implements TodoRepository {
 
     @Override
     public int updateTodo(String id, String todo, String description, String exception) {
-        return jdbcTemplate.update("update todoList set todo = ?, description = ?, exception = ? where id = ?", todo,description, exception, id);
+        return jdbcTemplate.update("update todoList set todo = ?, description = ?, exception = ? ,alterDay = now() where id = ?", todo,description, exception, id);
     }
 
 
